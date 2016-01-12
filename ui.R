@@ -3,10 +3,12 @@ library(leaflet)
 library(dplyr)
 library(labmanager)
 
-voucher <- get_lab("sample_data")
+data_path <- file.path("www", "data")
+
+voucher <- get_lab("sample_data", path = data_path)
 with_img <-  voucher[["voucher_number"]][as.logical(voucher[["has_photo"]])]
 
-sequencing_data <- get_lab("sequencing_plate_data") %>%
+sequencing_data <- get_lab("sequencing_plate_data", path = data_path) %>%
     filter(!is.na(.$"bold_phylum_id")) %>%
     filter(bold_phylum_id != "")
 lst_bold_species <- paste(sequencing_data[["bold_phylum_id"]], "--",
