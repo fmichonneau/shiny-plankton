@@ -63,9 +63,7 @@ shinyServer(function(input, output) {
 
     list_thumbs_voucher <- function(vchr) {
         vchr_pth <- get_voucher_path(vchr)
-        message("vouhcer path: ", vchr_pth)
         vchr_pth <- vchr_pth[file.exists(vchr_pth)]
-        message(vchr_pth)
         if (length(vchr_pth) > 0)
             list.files(path = thumb_path(vchr_pth),
                        pattern = "JPG$", full.names = TRUE)
