@@ -37,8 +37,10 @@ navbarPage(
                      textOutput("voucher_phylum"),
                      textOutput("voucher_taxa"),
                      textOutput("voucher_has_sequence"),
-                     uiOutput("list_img")),
-                 )
+                     textOutput("voucher_bold_id"),
+                     uiOutput("list_img")
+                     )
+             )
              ),
     tabPanel("By species",
              sidebarLayout(

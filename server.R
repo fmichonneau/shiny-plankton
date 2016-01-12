@@ -145,6 +145,17 @@ shinyServer(function(input, output) {
         paste("Voucher:", paste0(vchr, " (", n_photos, ")", collapse = ", "))
     })
 
+    output$voucher_bold_id <- renderText({
+        res <- seq %>% filter(voucher_number == input$voucher_id) %>%
+            filter(success == 1) %>%
+            select(bold_genus_id, bold_species_id) %>%
+            paste(collapse = " ")
+        if (identical(res, "NA NA") || identical(res, "character(0) character(0)")) {
+            res <- "no identification"
+        }
+        paste("BOLD ID: ", res)
+    })
+
     ## Map
     points <- reactive({
         which_smpl <- smpl[smpl[["voucher_number"]] == input$voucher_id, ]
