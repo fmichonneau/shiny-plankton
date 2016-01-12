@@ -52,7 +52,7 @@ navbarPage(
                               ),
                  mainPanel(
                      textOutput("voucher_list"),
-                     fluidRow(uiOutput("list_img_species", style = "height: 255px;"))
+                     uiOutput("list_img_species", style = "height: 255px;")
                  )
              )
              ),
