@@ -125,17 +125,16 @@ shinyServer(function(input, output) {
         })
     }
 
-    output[["list_img"]] <- renderUI({
+    output$list_img <- renderUI({
         lst_files <- list.files(path = file.path(voucher_path(), 'thumbs'),
                                 pattern = "JPG$", full.names = TRUE)
-        render_img(lst_files, basename(voucher_path()))
+        render_img(lst_files, input$voucher_id)
     })
 
-    output[["list_img_species"]] <- renderUI({
+    output$list_img_species <- renderUI({
         vchr <- species_voucher(input$species)
         lst_files <- lapply(vchr, list_thumbs_voucher)
         lst_files <- unlist(lst_files)
-        message(lst_files)
         render_img(lst_files, paste0(vchr, collapse = ""))
     })
 
