@@ -115,11 +115,11 @@ shinyServer(function(input, output) {
     }
 
     render_img <- function(lst_files, voucher) {
+        img_links <- gsub("thumbs/", "large/", lst_files)
+        img_links <- gsub("www/", "", img_links)
         lapply(seq_along(assemble_img(lst_files, voucher)), function(i) {
-            img_links <- gsub("thumbs/", "large/", lst_files)
-            img_links <- gsub("www/", "", img_links)
-            a(href = img_links,
-              `data-lightbox` = paste0(voucher, i),
+            a(href = img_links[i],
+              `data-lightbox` = voucher,
               imageOutput(paste0(voucher, i), height = "255px", inline = TRUE)
               )
         })
