@@ -179,15 +179,18 @@ shinyServer(function(input, output) {
             distinct
     }
 
+    sp_points <- reactive({
+        species_points(species_voucher(input$species))
+    })
+
     output$species_station_map <- renderLeaflet({
-        sp_pts <- species_points(species_voucher(input$species))
         leaflet() %>%
             addTiles() %>%
-            addMarkers(data = sp_pts)
+            addMarkers(data = sp_points())
     })
 
     observe({
-        leafletProxy("species_station_map", data = species_points(species_voucher(input$species)))
+        leafletProxy("species_station_map", data = sp_points())
     })
 
 })
