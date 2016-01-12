@@ -16,7 +16,7 @@ lst_bold_species <- paste(sequencing_data[["bold_phylum_id"]], "--",
                           sequencing_data[["bold_species_id"]],
                           paste0("(", sequencing_data[["bold_bin_id"]], ")")) %>%
     sort %>%
-    .[nzchar(.)]
+    .[nchar(gsub("\\s", "", .)) > 0]
 
 
 navbarPage(
