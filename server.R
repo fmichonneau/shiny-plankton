@@ -45,10 +45,12 @@ shinyServer(function(input, output) {
     }
 
     species_info <- function(species) {
-        sp <- strsplit(species, " ")[[1]]
-        list(phylum = sp[[1]],
-             genus = sp[[3]],
-             species = sp[[4]])
+        if (nchar(species) > 0) {
+            sp <- strsplit(species, " ")[[1]]
+            list(phylum = sp[[1]],
+                 genus = sp[[3]],
+                 species = sp[[4]])
+        } else list(phylum = "", genus = "", species = "")
     }
 
     species_voucher <- function(input_species) {
