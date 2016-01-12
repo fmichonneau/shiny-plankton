@@ -21,7 +21,7 @@ lst_bold_species <- paste(sequencing_data[["bold_phylum_id"]], "--",
 
 navbarPage(
     tags$head(
-        tags$link(rel = "stylesheet", type = "text/css", href = "lightbox/css/lightbox.css")
+        tags$link(rel = "stylesheet", type = "text/css", href = "//lightbox/css/lightbox.css")
     ),
     "Florida plankton",
     tabPanel("By voucher",
@@ -54,5 +54,5 @@ navbarPage(
                  )
              )
              ),
-    tags$script(src = "lightbox/js/lightbox.js")
+    tags$script(src = "//lightbox/js/lightbox.js")
 )
