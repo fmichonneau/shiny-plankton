@@ -18,7 +18,7 @@ lst_bold_species <- paste(sequencing_data[["bold_phylum_id"]], "--",
     sort %>%
     .[nchar(gsub("\\s", "", .)) > 0]
 
-esus <- get_lab("sample_esu")
+esus <- get_lab("sample_esu", path = data_path)
 lst_esu <- paste(esus$phylum, esus$group_esu, sep = "-") %>% unique %>% sort
 
 navbarPage(
