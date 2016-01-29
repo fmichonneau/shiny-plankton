@@ -210,14 +210,28 @@ shinyServer(function(input, output) {
         species_points(species_voucher(input$species))
     })
 
-    output$species_station_map <- output$species_station_map2 <- renderLeaflet({
+    esu_points <- reactive({
+        species_points(esu_voucher(input$esu))
+    })
+
+    output$species_station_map <- renderLeaflet({
         leaflet() %>%
             addTiles() %>%
             addMarkers(data = sp_points())
     })
 
+    output$species_station_map2 <- renderLeaflet({
+        leaflet() %>%
+            addTiles() %>%
+            addMarkers(data = esu_points())
+    })
+
     observe({
         leafletProxy("species_station_map", data = sp_points())
+    })
+
+    observe({
+        leafletProxy("species_station_map", data = esu_points())
     })
 
 })
