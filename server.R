@@ -27,6 +27,7 @@ shinyServer(function(input, output) {
     smpl <- get_lab("sample_data", path = data_path)
     seq <- get_lab("sequencing_plate_data", path = data_path)
     sta <- get_lab("station_data", path = data_path)
+    esus <- get_lab("sample_esu", path = data_path)
 
     get_voucher_path <- function(voucher) {
         file.path(photo_path, voucher)
@@ -53,12 +54,31 @@ shinyServer(function(input, output) {
         } else list(phylum = "", genus = "", species = "")
     }
 
+    esu_info <- function(esu) {
+        if (nchar(esu) > 0) {
+            tt <- strsplit(esu, "-")[[1]]
+            list(phylum = tt[[1]],
+                 esu_id = tt[[2]])
+        } else
+            list(phylum = "",
+                 esu_id = "")
+    }
+
     species_voucher <- function(input_species) {
         sp_info <- species_info(input_species)
         ids <- filter(seq,
                       seq[["bold_phylum_id"]] == sp_info$phylum,
                       seq[["bold_genus_id"]] == sp_info$genus,
                       seq[["bold_species_id"]] == sp_info$species) %>%
+            select(voucher_number) %>%
+            .[[1]]
+    }
+
+    esu_voucher <- function(input_esu) {
+        es_info <- esu_info(input_esu)
+        filter(esus,
+               esus[["phylum"]] == es_info$phylum,
+               esus[["group_esu"]] == es_info$esu_id) %>%
             select(voucher_number) %>%
             .[[1]]
     }
@@ -138,6 +158,13 @@ shinyServer(function(input, output) {
         render_img(lst_files, paste0(vchr, collapse = ""))
     })
 
+    output$list_img_esu <- renderUI({
+        vchr <- esu_voucher(input$esu)
+        lst_files <- lapply(vchr, list_thumbs_voucher)
+        lst_files <- unlist(lst_files)
+        render_img(lst_files, paste0(vchr, collapse = ""))
+    })
+
     output$voucher_list <- renderText({
         vchr <- species_voucher(input$species)
         n_photos <- vapply(vchr, function(x) length(list_thumbs_voucher(x)),
@@ -183,7 +210,7 @@ shinyServer(function(input, output) {
         species_points(species_voucher(input$species))
     })
 
-    output$species_station_map <- renderLeaflet({
+    output$species_station_map <- output$species_station_map2 <- renderLeaflet({
         leaflet() %>%
             addTiles() %>%
             addMarkers(data = sp_points())

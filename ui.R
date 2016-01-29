@@ -18,10 +18,12 @@ lst_bold_species <- paste(sequencing_data[["bold_phylum_id"]], "--",
     sort %>%
     .[nchar(gsub("\\s", "", .)) > 0]
 
+esus <- get_lab("sample_esu")
+lst_esu <- paste(esus$phylum, esus$group_esu, sep = "-") %>% unique %>% sort
 
 navbarPage(
     tags$head(
-        tags$link(rel = "stylesheet", type = "text/css", href = "../lightbox/css/lightbox.css")
+        tags$link(rel = "stylesheet", type = "text/css", href = "lightbox.css")
     ),
     "Florida plankton",
     tabPanel("By voucher",
@@ -56,5 +58,19 @@ navbarPage(
                  )
              )
              ),
-    tags$script(src = "../lightbox/js/lightbox.js")
+    tabPanel("By ESU",
+             sidebarLayout(
+                 sidebarPanel("Choose the species",
+                              selectInput('esu', "ESU",
+                                          choices = lst_esu,
+                                          selected = TRUE),
+                              leafletOutput("species_station_map2")
+                              ),
+                 mainPanel(
+                     textOutput("voucher_list_esu"),
+                     uiOutput("list_img_esu", style = "height: 255px;")
+                 )
+             )
+             ),
+    tags$script(src = "lightbox.js")
 )
