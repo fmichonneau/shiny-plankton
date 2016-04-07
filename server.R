@@ -172,6 +172,11 @@ shinyServer(function(input, output) {
         paste("Voucher:", paste0(vchr, " (", n_photos, ")", collapse = ", "))
     })
 
+    output$voucher_list_esu <- renderText({
+        vchr <- esu_voucher(input$esu)
+        paste("Voucher:", paste(vchr, collapse = ", "))
+    })
+
     output$voucher_bold_id <- renderText({
         res <- seq %>% filter(voucher_number == input$voucher_id) %>%
             filter(success == 1) %>%
