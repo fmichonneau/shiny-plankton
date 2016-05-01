@@ -92,6 +92,21 @@ shinyServer(function(input, output) {
         else character(0)
     }
 
+    lst_esu_from_phylum <- function(phylum) {
+        esus[esus[["phylum"]] == phylum, ] %>%
+            select(phylum, group_esu) %>%
+            distinct(phylum, group_esu) %>%
+            apply(1, function(x) paste(x[1], x[2], sep = "-")) %>%
+            gsub("\\s", "", .)
+    }
+
+    ## for the gallery, only returns 1 image per esu
+    thumb_from_esu <- function(esu) {
+        vchrs <- esu_voucher(esu)
+        vchr <- sample(vchrs, 1)
+        sample(list_thumbs_voucher(vchr), 1)
+    }
+
     output$voucher_selected <- renderText({
         paste("Information about", input$voucher_id)
     })
@@ -121,29 +136,38 @@ shinyServer(function(input, output) {
               )
     })
 
-    assemble_img <- function(lst_files, voucher) {
-        lapply(seq_along(lst_files), function(i) {
-            output[[paste0(voucher, i)]] <- renderImage({
-                return(list(
-                    src = lst_files[i],
-                    filetype = "image/jpeg",
-                    height = 200,
-                    width = 300
-                ))
-            }, deleteFile = FALSE)
-        })
-    }
 
     render_img <- function(lst_files, voucher) {
         img_links <- gsub("thumbs/", "large/", lst_files)
         img_links <- gsub("www/", "", img_links)
-        lapply(seq_along(assemble_img(lst_files, voucher)), function(i) {
-            a(href = img_links[i],
-              `data-lightbox` = voucher,
-              imageOutput(paste0(voucher, i), height = "255px", inline = TRUE)
-              )
-        })
+        lst_files <- gsub("www/", "", lst_files)
+        div(tags$div(id = "test"),
+            lapply(seq_along(lst_files), function(x) {
+                div(
+                    a(href = img_links[x], `data-lightbox` = voucher,
+                      tags$img(src = lst_files[x], height = "255px")
+                      )
+                )
+            })
+            )
     }
+
+    render_gallery <- function(lst_files, voucher) {
+        img_links <- gsub("thumbs/", "large/", lst_files)
+        img_links <- gsub("www/", "", img_links)
+        lst_files <- gsub("www/", "", lst_files)
+        div(tags$div(id = "test"),
+            lapply(seq_along(lst_files), function(x) {
+                div(
+                    h5(voucher[x]),
+                    a(href = img_links[x], `data-lightbox` = voucher,
+                      tags$img(src = lst_files[x], height = "255px")
+                      )
+                )
+            })
+            )
+    }
+
 
     output$list_img <- renderUI({
         lst_files <- list.files(path = file.path(voucher_path(), 'thumbs'),
@@ -165,6 +189,27 @@ shinyServer(function(input, output) {
         render_img(lst_files, paste0(vchr, collapse = ""))
     })
 
+    output$gallery_esu <- renderUI({
+        esus <- lst_esu_from_phylum(input$selected_phylum)
+        lst_img <- lapply(esus, function(esu) {
+            vchr <- esu_voucher(esu)
+            lst_files <- lapply(vchr,
+                                function(x) {
+                list_thumbs_voucher(x)
+            })
+            lst_files <- unlist(lst_files)
+            if (length(lst_files) < 1) {
+                ##"www/no_thumb.png"
+                character(0)
+            } else {
+                sample(unlist(lst_files), 1)
+            }
+        })
+        esus <- esus[sapply(lst_img, length) > 0]
+        lst_img <- lst_img[sapply(lst_img, length) > 0]
+        render_gallery(lst_img, esus)
+    })
+
     output$voucher_list <- renderText({
         vchr <- species_voucher(input$species)
         n_photos <- vapply(vchr, function(x) length(list_thumbs_voucher(x)),
@@ -175,6 +220,10 @@ shinyServer(function(input, output) {
     output$voucher_list_esu <- renderText({
         vchr <- esu_voucher(input$esu)
         paste("Voucher:", paste(vchr, collapse = ", "))
+    })
+
+    output$select_phylum <- renderText({
+        paste("Phylum: ", input$selected_phylum)
     })
 
     output$voucher_bold_id <- renderText({

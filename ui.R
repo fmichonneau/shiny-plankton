@@ -20,6 +20,7 @@ lst_bold_species <- paste(sequencing_data[["bold_phylum_id"]], "--",
 
 esus <- get_lab("sample_esu", path = data_path)
 lst_esu <- paste(esus$phylum, esus$group_esu, sep = "-") %>% unique %>% sort
+lst_phyla <- unique(esus$phylum)
 
 navbarPage(
     tags$head(
@@ -69,6 +70,19 @@ navbarPage(
                  mainPanel(
                      textOutput("voucher_list_esu"),
                      uiOutput("list_img_esu", style = "height: 255px;")
+                 )
+             )
+             ),
+    tabPanel("ESU Gallery",
+             sidebarLayout(
+                 sidebarPanel("Choose the phylum",
+                              selectInput('selected_phylum', "Phylum",
+                                          choices = lst_phyla)
+                              ##leafletOutput("species_station_map3")
+                              ),
+                 mainPanel(
+                     h2(textOutput("selected_phylum")),
+                     uiOutput("gallery_esu", style = "height: 255px;")
                  )
              )
              ),
