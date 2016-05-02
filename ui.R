@@ -69,6 +69,7 @@ navbarPage(
                               ),
                  mainPanel(
                      textOutput("voucher_list_esu"),
+                     textOutput("esu_bold_id"),
                      uiOutput("list_img_esu", style = "height: 255px;")
                  )
              )

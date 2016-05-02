@@ -76,9 +76,8 @@ shinyServer(function(input, output) {
 
     esu_voucher <- function(input_esu) {
         es_info <- esu_info(input_esu)
-        filter(esus,
-               esus[["phylum"]] == es_info$phylum,
-               esus[["group_esu"]] == es_info$esu_id) %>%
+        esus[esus[["phylum"]] == es_info$phylum &
+               esus[["group_esu"]] == es_info$esu_id, ] %>%
             select(voucher_number) %>%
             .[[1]]
     }
@@ -168,6 +167,17 @@ shinyServer(function(input, output) {
             )
     }
 
+    bold_id_from_voucher <- function(voucher) {
+        res <- seq %>%
+            filter(voucher_number == voucher) %>%
+            filter(success == 1) %>%
+            select(bold_genus_id, bold_species_id) %>%
+            paste(collapse = " ")
+        if (identical(res, "NA NA") || identical(res, "character(0) character(0)")) {
+            res <- "no identification"
+        }
+        paste("BOLD ID: ", res)
+    }
 
     output$list_img <- renderUI({
         lst_files <- list.files(path = file.path(voucher_path(), 'thumbs'),
@@ -227,14 +237,13 @@ shinyServer(function(input, output) {
     })
 
     output$voucher_bold_id <- renderText({
-        res <- seq %>% filter(voucher_number == input$voucher_id) %>%
-            filter(success == 1) %>%
-            select(bold_genus_id, bold_species_id) %>%
-            paste(collapse = " ")
-        if (identical(res, "NA NA") || identical(res, "character(0) character(0)")) {
-            res <- "no identification"
-        }
-        paste("BOLD ID: ", res)
+        bold_id_from_voucher(input$voucher_id)
+    })
+
+    output$esu_bold_id <- renderText({
+        vchrs <- esu_voucher(input$esu)
+        bold_id <- sapply(vchrs, bold_id_from_voucher)
+        paste(unique(bold_id), collapse = ", ")
     })
 
     ## Map
