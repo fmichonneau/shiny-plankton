@@ -70,7 +70,7 @@ shinyServer(function(input, output) {
                       seq[["bold_phylum_id"]] == sp_info$phylum,
                       seq[["bold_genus_id"]] == sp_info$genus,
                       seq[["bold_species_id"]] == sp_info$species) %>%
-            select(voucher_number) %>%
+            dplyr::select(voucher_number) %>%
             .[[1]]
     }
 
@@ -78,7 +78,7 @@ shinyServer(function(input, output) {
         es_info <- esu_info(input_esu)
         esus[esus[["phylum"]] == es_info$phylum &
                esus[["group_esu"]] == es_info$esu_id, ] %>%
-            select(voucher_number) %>%
+            dplyr::select(voucher_number) %>%
             .[[1]]
     }
 
@@ -93,7 +93,7 @@ shinyServer(function(input, output) {
 
     lst_esu_from_phylum <- function(phylum) {
         esus[esus[["phylum"]] == phylum, ] %>%
-            select(phylum, group_esu) %>%
+            dplyr::select(phylum, group_esu) %>%
             distinct(phylum, group_esu) %>%
             apply(1, function(x) paste(x[1], x[2], sep = "-")) %>%
             gsub("\\s", "", .)
@@ -140,14 +140,20 @@ shinyServer(function(input, output) {
         img_links <- gsub("thumbs/", "large/", lst_files)
         img_links <- gsub("www/", "", img_links)
         lst_files <- gsub("www/", "", lst_files)
+        captions <- gsub("(.+)_(.+)_(.+)", "\\1_\\2", basename(img_links))
+
         div(tags$div(id = "test"),
             lapply(seq_along(lst_files), function(x) {
-                div(
+                div(style = "padding-top: 25px;",
+                    p(captions[x]),
                     a(href = img_links[x], `data-lightbox` = voucher,
-                      tags$img(src = lst_files[x], height = "255px")
+                      `data-title` = captions[x],
+                      tags$img(src = lst_files[x], height = "255px",
+                               style = "padding-top: -5px; padding-bottom: 10px;")
                       )
                 )
-            })
+            }),
+            div(style = "height: 70px;")
             )
     }
 
@@ -157,13 +163,15 @@ shinyServer(function(input, output) {
         lst_files <- gsub("www/", "", lst_files)
         div(tags$div(id = "test"),
             lapply(seq_along(lst_files), function(x) {
-                div(
-                    h5(voucher[x]),
+                div(style = "padding-top: 25px;",
+                    p(voucher[x]),
                     a(href = img_links[x], `data-lightbox` = voucher,
-                      tags$img(src = lst_files[x], height = "255px")
+                      tags$img(src = lst_files[x], height = "255px",
+                               style = "padding-top: -5px; padding-bottom: 10px;")
                       )
                 )
-            })
+            }),
+            div(style = "height: 70px;")
             )
     }
 
@@ -171,7 +179,7 @@ shinyServer(function(input, output) {
         res <- seq %>%
             filter(voucher_number == voucher) %>%
             filter(success == 1) %>%
-            select(bold_genus_id, bold_species_id) %>%
+            dplyr::select(bold_genus_id, bold_species_id) %>%
             paste(collapse = " ")
         if (identical(res, "NA NA") || identical(res, "character(0) character(0)")) {
             res <- "no identification"
@@ -264,7 +272,7 @@ shinyServer(function(input, output) {
     species_points <- function(vchr) {
         filter(smpl, voucher_number %in% vchr) %>%
             left_join(sta, by = "station_number") %>%
-            select(latitude = latitude_start,
+            dplyr::select(latitude = latitude_start,
                    longitude = longitude_start) %>%
             distinct
     }
