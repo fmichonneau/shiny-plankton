@@ -65,6 +65,7 @@ navbarPage(
                               leafletOutput("species_station_map2")
                               ),
                  mainPanel(
+                     h1("Gallery of photo for each ESU"),
                      textOutput("voucher_list_esu"),
                      textOutput("esu_bold_id"),
                      uiOutput("list_img_esu", style = "height: 255px;")
@@ -79,9 +80,10 @@ navbarPage(
                               ##leafletOutput("species_station_map3")
                               ),
                  mainPanel(
+                     h1("Representative of each ESU"),
                      h2(textOutput("selected_phylum")),
                      uiOutput("gallery_esu", style = "height: 255px;")
-                 )
+                 ),
              )
              ),
     tags$head(
