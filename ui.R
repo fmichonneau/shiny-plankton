@@ -24,7 +24,8 @@ lst_phyla <- unique(esus$phylum)
 
 navbarPage(
     tags$head(
-        tags$link(rel = "stylesheet", type = "text/css", href = "lightbox.css")
+             tags$link(rel = "stylesheet", type = "text/css", href = "lightbox.css"),
+             tags$link(rel = "stylesheet", type = "text/css", href = "shiny.css")
     ),
     "Florida plankton",
     tabPanel("By voucher",
@@ -87,5 +88,17 @@ navbarPage(
                  )
              )
              ),
+    tags$footer(
+             div(class = "container",
+                 p(class = "muted",
+                   "Site developed by",
+                   a(href='mailto:francois.michonneau@gmail.com', "François Michonneau"), "|",
+                   "hosted on", a(href = "https://m.do.co/c/eeb1e7ad6266",  "Digital Ocean"), "|",
+                   "source code on", a(href = "https://github.com/fmichonneau/flpk-shiny", "GitHub"), "|",
+                   "Licence:", a(href = "https://creativecommons.org/licenses/by/4.0/legalcode", "CC-BY")
+                   )
+                 ),
+             class = "footer"
+         ),
     tags$script(src = "lightbox.js")
 )
