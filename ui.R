@@ -23,11 +23,7 @@ lst_esu <- paste(esus$phylum, esus$group_esu, sep = "-") %>% unique %>% sort
 lst_phyla <- unique(esus$phylum)
 
 navbarPage(
-    tags$head(
-             tags$link(rel = "stylesheet", type = "text/css", href = "lightbox.css"),
-             tags$link(rel = "stylesheet", type = "text/css", href = "shiny.css")
-    ),
-    "Florida plankton",
+    title = "Plankton Atlas",
     tabPanel("By voucher",
              sidebarLayout(
                  sidebarPanel("Specimen information",
@@ -88,6 +84,10 @@ navbarPage(
                  )
              )
              ),
+    tags$head(
+             tags$link(rel = "stylesheet", type = "text/css", href = "lightbox.css"),
+             tags$link(rel = "stylesheet", type = "text/css", href = "shiny.css")
+         ),
     tags$footer(
              div(class = "container",
                  p(class = "muted",
