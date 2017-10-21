@@ -96,7 +96,7 @@ navbarPage(
                    "Site developed by",
                    a(href='mailto:francois.michonneau@gmail.com', "François Michonneau"), "|",
                    "hosted on", a(href = "https://m.do.co/c/eeb1e7ad6266",  "Digital Ocean"), "|",
-                   "source code on", a(href = "https://github.com/fmichonneau/flpk-shiny", "GitHub"), "|",
+                   "source code on", a(href = "https://github.com/fmichonneau/shiny-plankton", "GitHub"), "|",
                    "Licence:", a(href = "https://creativecommons.org/licenses/by/4.0/legalcode", "CC-BY")
                    )
                  ),
